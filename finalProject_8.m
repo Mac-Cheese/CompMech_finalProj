@@ -11,7 +11,8 @@ nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 % implicit solution given as
 eta=@(f) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))+...
     sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)));
-f=linspace(0,1); etaf=eta(f); figure(1); plot(etaf,f)
+f=[linspace(0,.99),linspace(.99,1)]; etaf=eta(f);
+figure(1); plot(etaf,f); xlim([0,10]); xlabel('eta'); ylabel('script f')
 %% I.b
 % derivative
 'need to pull a script from the list, diffc2()'
