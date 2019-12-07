@@ -11,18 +11,16 @@ nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 % implicit solution given as
 eta=@(f) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))+...
     sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)));
-f=[linspace(0,.0198),linspace(.02,.97,96),linspace(.9701,.9999,150)];
-etaf=eta(f);%346 elements
+f=[linspace(0,.9999,3334)];
+etaf=eta(f);
 figure(1); plot(etaf,f); xlim([0,10]); xlabel('eta'); ylabel('script f')
 %% I.b
 % derivative
-detaf=[diffc2(etaf(1:100),.0002); diffc2(etaf(101:196),.01);...
-    diffc2(etaf(197:346),.0002)]; df=1./detaf;
-figure(2); plot(etaf,df); xlim([0,10]);
+detaf=diffc2(etaf(2:end),.0003); df=1./detaf;
+figure(2); plot(etaf(2:end),df); xlim([0,10]);
 xlabel('eta'); ylabel('derivative script f')
 %% I.c
 % derivative and proving the thing
-dtf=[diffc2(df(1:100),.0002); diffc2(df(101:196),.01);...
-    diffc2(df(197:346),.0002)];
-figure(3); plot(etaf,dtf); xlim([0,10]);
+dtf=diffc2(df,.0003);
+figure(3); plot(etaf(2:end),dtf); xlim([0,10]);
 xlabel('eta'); ylabel('second derivative script f')
