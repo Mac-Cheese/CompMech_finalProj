@@ -20,3 +20,9 @@ detaf=[diffc2(etaf(1:100),.0002); diffc2(etaf(101:196),.01);...
     diffc2(etaf(197:346),.0002)]; df=1./detaf;
 figure(2); plot(etaf,df); xlim([0,10]);
 xlabel('eta'); ylabel('derivative script f')
+%% I.c
+% derivative and proving the thing
+dtf=[diffc2(df(1:100),.0002); diffc2(df(101:196),.01);...
+    diffc2(df(197:346),.0002)];
+figure(3); plot(etaf,dtf); xlim([0,10]);
+xlabel('eta'); ylabel('second derivative script f')
