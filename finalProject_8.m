@@ -9,15 +9,13 @@ nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 %for eta=0, f=df/d'eta=0;  for eta=H=10, df/d'eta=d2f/d'eta^2 = 0
 %% I.a
 % implicit solution given as
-func=@(f,n) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))+sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)))-n;
-n=0:0.05:10;
+etaf=@(f,n) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))...
+    +sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)))-n;
+n=[0:0.05:10]; eta=zeros(1,(10/.05)+1); fx=zeros(1,(10/.05)+1);
 for i=1:length(n)
-    [root(i),fx(i)]=bisect(@(f) func(f,n(i)),0,1);
+    [eta(i),fx(i)]=bisectE(@(f) etaf(f,n(i)),0,(1-1e-8));
 end
-f=root';
-f(1)=0;
-figure(1); plot(n,f); xlim([0,10]); xlabel('eta'); ylabel('script f')
-
+figure(1); plot(n,eta); xlabel('eta'); ylabel('script f')
 %% I.b
 % derivative
 df=diffc2(f,0.05);
