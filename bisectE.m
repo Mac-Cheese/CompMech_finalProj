@@ -1,4 +1,4 @@
-function [root,fx,ARE,trys]=bisect(fun,xl,xu,ea,tries,varargin)
+function [root,fx,ARE,trys]=bisectE(fun,xl,xu,ea,tries,varargin)
 % bisect: root location zeroes
 % [root,fx,ea,iter]=bisect(func,xl,xu,es,maxit,p1,p2,...):
 % uses bisection method to find the root of func
@@ -23,7 +23,7 @@ if test==0
 elseif test>0
     error('no sign change')
 else
-    root=xl; ARE=1;%initialize variables here
+    root=xl; ARE=1; go=true;%initialize variables here
     if (nargin<4)||(isempty(ea)), ea=1e-4; end
     if (nargin<5)||(isempty(tries)), tries=50; end
 end
