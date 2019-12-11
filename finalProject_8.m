@@ -1,7 +1,7 @@
 %% Final Project
 % Alden "Mac" Lamp, Eric Kostoss, Nathan Orsini; 11-25-2019
 %% init
-clear all
+clc;clear;clf;
 %% I
 nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 %nondimensional y: eta=y/x*(Re^.25); velocity: df/d'eta = u/Uo
@@ -71,4 +71,25 @@ plot(x,fn(:,1),'y--');hold off;
 
 %% I.i
 % Solve ODE
-n=1:1:65
+za=fzero(@res,Z,[],fn,x);
+[n,theta]=ode45(@dydx,[0 10],[1 za],[],fn,x);
+figure(4);
+plot(theta(:,1),n); xlim([0,1]); xlabel('theta'); ylabel('eta')
+
+%% I.j
+% Thermal boundary location
+theta_s=theta(:,1)-0.01;
+for i=1:length(theta_s)-1
+    if sign(theta_s(i))~=sign(theta_s(i+1))
+        fprintf('Eta: %6.4f\n',n(i))
+    end
+end
+
+%% I.k
+% Tempature gradient
+dtheta=diffc2(theta(:,1),n(2)-n(1));
+fprintf("theta'(0): %5.4f\n",-1*dtheta(1))
+fprintf('Theoretical: %5.4f\n',0.235*(0.7)^(1/3))
+
+%% I.l
+% Solve Eq.(4) and compare to theta(n)
