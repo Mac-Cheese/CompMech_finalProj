@@ -20,11 +20,10 @@ if test==0
     if fun(xl,varargin{:})==0, root=xl;
     elseif fun(xu,varargin{:})==0, root=xu;%check the upper point for zero
     end
-elseif test>0
-    error('no sign change')
+elseif test>0, error('no sign change')
 else
     root=xl; ARE=1; go=true;%initialize variables here
-    if (nargin<4)||(isempty(ea)), ea=1e-4; end
+    if (nargin<4)||(isempty(ea)), ea=1e-6; end
     if (nargin<5)||(isempty(tries)), tries=50; end
 end
 trys=0;
@@ -39,7 +38,9 @@ while go
   elseif test>0
     xl=root;
   else
-    ARE=0;
+    if fun(root,varargin{:})==0, ARE=0;
+    else, root=xl; ARE=0;
+    end%redundantly check lower point for case of upper bound 'Inf'
   end
   if (ARE<=ea)||(trys>=tries), break; end
 end

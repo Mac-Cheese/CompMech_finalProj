@@ -11,21 +11,22 @@ nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 % implicit solution given as
 etaf=@(f,n) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))...
     +sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)))-n;
-n=[0:0.05:10]; eta=zeros(1,(10/.05)+1); fx=zeros(1,(10/.05)+1);
-for i=1:length(n)
-    [eta(i),fx(i)]=bisectE(@(f) etaf(f,n(i)),0,(1-1e-8));
+eta=[0:0.05:10]'; f=zeros((10/.05)+1,1);
+for i=1:length(eta)
+    f(i)=bisectE(@(f) etaf(f,eta(i)),0,1, 1e-8);
 end
-figure(1); plot(n,eta); xlabel('eta'); ylabel('script f')
+figure(1); hold off; plot(eta,f); xlabel('eta'); ylabel('script f')
+
 %% I.b
 % derivative
 df=diffc2(f,0.05);
-figure(2); plot(n,df); xlim([0,10]);
+figure(2); hold off; plot(eta,df);
 xlabel('eta'); ylabel('derivative script f')
 
 %% I.c
 % derivative and proving the thing
 d2f=diffc2(df,0.05);
-figure(3); plot(n,d2f); xlim([0,10]);
+figure(3); plot(eta,d2f);
 xlabel('eta'); ylabel('second derivative script f')
 fprintf('f"(0): %5.4f\n',d2f(1))
 fprintf('Cf: %5.4f\n',1.778/8)
@@ -33,15 +34,15 @@ fprintf('Cf: %5.4f\n',1.778/8)
 %% I.d
 % maximum velocity
 [fx,index]=goldmin_array(df');
-fprintf('n: %5.4f\n',n(index))
+fprintf('n: %5.4f\n',eta(index))
 fprintf("f'(n): %5.4f\n",df(index))
-ply=polyfit(n((index-5):(index+5)),df((index-5):(index+5)),2);
+ply=polyfit(eta((index-3):(index+3)),df((index-3):(index+3)),2);
 figure(2); hold on;
-plot(n((index-5):(index+5)),polyval(ply,n((index-5):(index+5))))
+plot(eta((index-3):(index+3)),polyval(ply,eta((index-3):(index+3))));
 
 %% I.e
 % wall jet momentum flu
-Z=trapz(n,df.^2)*trapz(n,df);
+Z=trapz(eta,df.^2)*trapz(eta,df);
 fprintf('Analytical: %5.4f\n',Z)
 fprintf('Theoretical: %5.4f\n',128/(9*4^3))
 
@@ -50,9 +51,42 @@ fprintf('Theoretical: %5.4f\n',128/(9*4^3))
 dfs=df-0.01;
 for i=1:length(df)-1
     if sign(dfs(i))~=sign(dfs(i+1))
-        fprintf('Eta: %6.4f\n',n(i))
+        fprintf('Eta: %6.4f\n',eta(i))
     end
 end
 
 %% I.g
-% 
+% Velocity at eta=h
+v_h=3*eta(201)*df(201)-f(201);
+fprintf('Analytical: %5.4f\n',Z)
+
+%% I.h
+% Solve Eq.(1) and compare to f(n)
+dn=@(x,y) [y(2);y(3);-y(1).*y(3)-2.*y(2).^2];
+[x,fn]=ode45(dn,[0 10],[0 0 Z]);
+figure(1); hold on; plot(x,fn(:,1),'y--');
+
+%% I.i
+% Solve ODE
+za=fzero(@res,Z,[],fn,x);
+[n,theta]=ode45(@dydx,[0 10],[1 za],[],fn,x);
+figure(4);
+plot(theta(:,1),n); xlim([0,1]); xlabel('theta'); ylabel('eta')
+
+%% I.j
+% Thermal boundary location
+theta_s=theta(:,1)-0.01;
+for i=1:length(theta_s)-1
+    if sign(theta_s(i))~=sign(theta_s(i+1))
+        fprintf('Eta: %6.4f\n',n(i))
+    end
+end
+
+%% I.k
+% Tempature gradient
+dtheta=diffc2(theta(:,1),n(2)-n(1));
+fprintf("theta'(0): %5.4f\n",-1*dtheta(1))
+fprintf('Theoretical: %5.4f\n',0.235*(0.7)^(1/3))
+
+%% I.l
+% Solve Eq.(4) and compare to theta(n)
