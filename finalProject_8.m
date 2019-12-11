@@ -66,14 +66,14 @@ dn=@(x,y) [y(2);y(3);-y(1).*y(3)-2.*y(2).^2];
 [x,fn]=ode45(dn,[0 10],[0 0 Z]);
 figure(1); hold on; plot(x,fn(:,1),'y--');
 
-%% I.i
+%% II.i
 % Solve ODE
 za=fzero(@res,Z,[],fn,x);
 [n,theta]=ode45(@dydx,[0 10],[1 za],[],fn,x);
 figure(4);
 plot(theta(:,1),n); xlim([0,1]); xlabel('theta'); ylabel('eta')
 
-%% I.j
+%% II.j
 % Thermal boundary location
 theta_s=theta(:,1)-0.01;
 for i=1:length(theta_s)-1
@@ -82,11 +82,11 @@ for i=1:length(theta_s)-1
     end
 end
 
-%% I.k
+%% II.k
 % Tempature gradient
 dtheta=diffc2(theta(:,1),n(2)-n(1));
 fprintf("theta'(0): %5.4f\n",-1*dtheta(1))
 fprintf('Theoretical: %5.4f\n',0.235*(0.7)^(1/3))
 
-%% I.l
+%% II.l
 % Solve Eq.(4) and compare to theta(n)
