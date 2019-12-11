@@ -39,7 +39,9 @@ while go
   elseif test>0
     xl=root;
   else
-    ARE=0;
+    if fun(root,varargin{:})==0, ARE=0;
+    else, root=xl; ARE=0;
+    end%redundantly check lower point for case of upper bound 'Inf'
   end
   if (ARE<=ea)||(trys>=tries), break; end
 end
