@@ -32,15 +32,15 @@ fprintf('Cf*(Re^(5/4))/8: %5.4f, compare %5.4f\n',d2f(1),1.778/8)
 
 %% I.d
 % maximum velocity
-[~,index]=max(df);
-ply=polyfit(eta((index-3):(index+3)),df((index-3):(index+3)),2);
-fetaReg=@(eta,neg) neg*((ply(1)*eta.^2)+(ply(2)*eta)+ply(3));
-etaMax=goldmin(fetaReg,0,10,1e-6,9999,-1);
+fetaSpln=spline(eta,df);
+fetaReg=@(eta,neg,dwn) (neg*-1)*(ppval(fetaSpln,eta)-(dwn*.01));
+etaMax=goldmin(fetaReg,0,10,1e-6,9999,true,false);
 figure(2); hold on;
-plot(eta((index-3):(index+3)),fetaReg(eta((index-3):(index+3)),1),...
-    etaMax,fetaReg(etaMax,1),'*')
+plot((etaMax-.1):.01:(etaMax+.1),...
+    ppval(fetaSpln,(etaMax-.1):.01:(etaMax+.1)),...
+    etaMax,ppval(fetaSpln,etaMax),'*')
 fprintf('n [eta]: %5.4f, compare 2.029\n',etaMax)
-fprintf('f''(n) =  %5.4f, compare %5.4f\n',fetaReg(etaMax,1),2^(-5/3))
+fprintf('f''(n) =  %5.4f, compare %5.4f\n',ppval(fetaSpln,etaMax),2^(-5/3))
 
 %% I.e
 % wall jet momentum flux
