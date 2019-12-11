@@ -9,13 +9,16 @@ nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 %for eta=0, f=df/d'eta=0;  for eta=H=10, df/d'eta=d2f/d'eta^2 = 0
 %% I.a
 % implicit solution given as
-etaf=@(f,n) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))...
-    +sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)))-n;
-n=[0:0.05:10]; eta=zeros(1,(10/.05)+1); fx=zeros(1,(10/.05)+1);
+func=@(f,n) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))+sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)))-n;
+n=0:0.05:10;
 for i=1:length(n)
-    [eta(i),fx(i)]=bisectE(@(f) etaf(f,n(i)),0,(1-1e-8));
+    [root(i),fx(i)]=bisect(@(f) func(f,n(i)),0,1);
 end
-figure(1); plot(n,eta); xlabel('eta'); ylabel('script f')
+f=root';
+n=n';
+f(1)=0;
+figure(1); plot(n,f); xlim([0,10]); xlabel('eta'); ylabel('script f')
+
 %% I.b
 % derivative
 df=diffc2(f,0.05);
@@ -37,7 +40,7 @@ fprintf('n: %5.4f\n',n(index))
 fprintf("f'(n): %5.4f\n",df(index))
 ply=polyfit(n((index-5):(index+5)),df((index-5):(index+5)),2);
 figure(2); hold on;
-plot(n((index-5):(index+5)),polyval(ply,n((index-5):(index+5))))
+plot(n((index-5):(index+5)),polyval(ply,n((index-5):(index+5))));hold off;
 
 %% I.e
 % wall jet momentum flu
@@ -55,4 +58,17 @@ for i=1:length(df)-1
 end
 
 %% I.g
-% 
+% Velocity at eta=h
+v_h=3*n(201)*df(201)-f(201);
+fprintf('Analytical: %5.4f\n',Z)
+
+%% I.h
+% Solve Eq.(1) and compare to f(n)
+dn=@(x,y) [y(2);y(3);-y(1).*y(3)-2.*y(2).^2];
+[x,fn]=ode45(dn,[0 10],[0 0 Z]);
+figure(1);hold on;
+plot(x,fn(:,1),'y--');hold off;
+
+%% I.i
+% Solve ODE
+n=1:1:65
