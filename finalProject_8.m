@@ -28,8 +28,7 @@ xlabel('eta'); ylabel('derivative script f')
 d2f=diffc2(df,0.05);
 figure(3); plot(eta,d2f);
 xlabel('eta'); ylabel('second derivative script f')
-fprintf('f"(0): %5.4f\n',d2f(1))%also rearranged, the numbers are not the
-fprintf('Cf: %5.4f\n',1.778/8)%      ones in question, there
+fprintf('Cf*(Re^(5/4))/8: %5.4f, compare %5.4f\n',d2f(1),1.778/8)
 
 %% I.d
 % maximum velocity
@@ -40,14 +39,13 @@ etaMax=goldmin(fetaReg,0,10,1e-6,9999,-1);
 figure(2); hold on;
 plot(eta((index-3):(index+3)),fetaReg(eta((index-3):(index+3)),1),...
     etaMax,fetaReg(etaMax,1),'*')
-fprintf('n [eta]: %5.4f\n',etaMax)
-fprintf("f'(n) =  %5.4f\n",fetaReg(etaMax,1))
+fprintf('n [eta]: %5.4f, compare 2.029\n',etaMax)
+fprintf('f''(n) =  %5.4f, compare %5.4f\n',fetaReg(etaMax,1),2^(-5/3))
 
 %% I.e
 % wall jet momentum flux
-Z=trapz(eta,df.^2)*trapz(eta,df);%solved for integral=constants
-fprintf('Analytical: %5.4f\n',Z)%integral
-fprintf('Theoretical: %5.4f\n',128/(9*4^3))%constants
+Z=trapz(eta,df.^2)*trapz(eta,df);
+fprintf('[flux]/(Ui*nu^2*4^3): %5.4f, compare %5.4f\n',Z,128/(9*(4^3)))
 
 %% I.f
 % Shear thickness location
