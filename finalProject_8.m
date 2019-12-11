@@ -28,23 +28,26 @@ xlabel('eta'); ylabel('derivative script f')
 d2f=diffc2(df,0.05);
 figure(3); plot(eta,d2f);
 xlabel('eta'); ylabel('second derivative script f')
-fprintf('f"(0): %5.4f\n',d2f(1))
-fprintf('Cf: %5.4f\n',1.778/8)
+fprintf('f"(0): %5.4f\n',d2f(1))%also rearranged, the numbers are not the
+fprintf('Cf: %5.4f\n',1.778/8)%      ones in question, there
 
 %% I.d
 % maximum velocity
-[fx,index]=goldmin_array(df');
-fprintf('n: %5.4f\n',eta(index))
-fprintf("f'(n): %5.4f\n",df(index))
+[~,index]=max(df);
 ply=polyfit(eta((index-3):(index+3)),df((index-3):(index+3)),2);
+fetaReg=@(eta,neg) neg*((ply(1)*eta.^2)+(ply(2)*eta)+ply(3));
+etaMax=goldmin(fetaReg,0,10,1e-6,9999,-1);
 figure(2); hold on;
-plot(eta((index-3):(index+3)),polyval(ply,eta((index-3):(index+3))));
+plot(eta((index-3):(index+3)),fetaReg(eta((index-3):(index+3)),1),...
+    etaMax,fetaReg(etaMax,1),'*')
+fprintf('n [eta]: %5.4f\n',etaMax)
+fprintf("f'(n) =  %5.4f\n",fetaReg(etaMax,1))
 
 %% I.e
-% wall jet momentum flu
-Z=trapz(eta,df.^2)*trapz(eta,df);
-fprintf('Analytical: %5.4f\n',Z)
-fprintf('Theoretical: %5.4f\n',128/(9*4^3))
+% wall jet momentum flux
+Z=trapz(eta,df.^2)*trapz(eta,df);%solved for integral=constants
+fprintf('Analytical: %5.4f\n',Z)%integral
+fprintf('Theoretical: %5.4f\n',128/(9*4^3))%constants
 
 %% I.f
 % Shear thickness location
@@ -66,6 +69,8 @@ dn=@(x,y) [y(2);y(3);-y(1).*y(3)-2.*y(2).^2];
 [x,fn]=ode45(dn,[0 10],[0 0 Z]);
 figure(1); hold on; plot(x,fn(:,1),'y--');
 
+%% II
+Pr=.7;
 %% II.i
 % Solve ODE
 za=fzero(@res,Z,[],fn,x);
