@@ -33,7 +33,7 @@ fprintf('Cf*(Re^(5/4))/8: %5.4f, compare %5.4f\n',d2f(1),1.778/8)
 %% I.d
 % maximum velocity
 fetaSpln=spline(eta,df);
-fetaReg=@(eta,neg,dwn) (neg*-1)*(ppval(fetaSpln,eta)-(dwn*.01));
+fetaReg=@(eta,neg,dwn) ((-2*neg)+1)*(ppval(fetaSpln,eta)-(dwn*.01));
 etaMax=goldmin(fetaReg,0,10,1e-6,9999,true,false);
 figure(2); hold on;
 plot((etaMax-.1):.01:(etaMax+.1),...
@@ -49,12 +49,9 @@ fprintf('[flux]/(Ui*nu^2*4^3): %5.4f, compare %5.4f\n',Z,128/(9*(4^3)))
 
 %% I.f
 % Shear thickness location
-dfs=df-0.01;
-for i=1:length(df)-1
-    if sign(dfs(i))~=sign(dfs(i+1))
-        fprintf('Eta: %6.4f\n',eta(i))
-    end
-end
+delta=bisectE(fetaReg,etaMax,10,1e-8,9999,false,true);
+fprintf(strcat('shear layer thickness delta1\n',...
+    'delta = %5.4f, compare 6.72\n'),delta)
 
 %% I.g
 % Velocity at eta=h
