@@ -1,7 +1,7 @@
 %% Final Project
 % Alden "Mac" Lamp, Eric Kostoss, Nathan Orsini; 11-25-2019
 %% init
-clc;clear;clf;
+clear all
 %% I
 nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 %nondimensional y: eta=y/x*(Re^.25); velocity: df/d'eta = u/Uo
@@ -36,9 +36,9 @@ fprintf('Cf: %5.4f\n',1.778/8)
 [fx,index]=goldmin_array(df');
 fprintf('n: %5.4f\n',eta(index))
 fprintf("f'(n): %5.4f\n",df(index))
-ply=polyfit(eta((index-5):(index+5)),df((index-5):(index+5)),2);
+ply=polyfit(eta((index-3):(index+3)),df((index-3):(index+3)),2);
 figure(2); hold on;
-plot(eta((index-5):(index+5)),polyval(ply,eta((index-5):(index+5))));
+plot(eta((index-3):(index+3)),polyval(ply,eta((index-3):(index+3))));
 
 %% I.e
 % wall jet momentum flu
