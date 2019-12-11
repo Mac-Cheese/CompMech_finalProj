@@ -12,7 +12,7 @@ nu=1.5e-5; rho=1.2;%[m^2/s]; [kg/m^3] with laminar valued Reynolds Number
 func=@(f,n) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))+sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)))-n;
 n=0:0.05:10;
 for i=1:length(n)
-    [root(i),fx(i)]=bisect(@(f) func(f,n(i)),0,1);
+    [root(i),fx(i)]=bisectE(@(f) func(f,n(i)),0,1);
 end
 f=root';
 n=n';
