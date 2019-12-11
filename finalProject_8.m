@@ -84,7 +84,7 @@ fprintf(strcat('thermal boundary layer thickness deltaT\n',...
 %% II.k
 % Tempature gradient
 dtheta=diffc2(theta(:,1),n(2)-n(1));
-fprintf("theta'(0): %5.4f, compare %5.4f\n",-1*dtheta(1),.235*(Pr^(1/3)))
+fprintf('theta''(0): %5.4f, compare %5.4f\n',-1*dtheta(1),.235*(Pr^(1/3)))
 
 %% II.l
 % Solve Eq.(4) and compare to theta(n)
