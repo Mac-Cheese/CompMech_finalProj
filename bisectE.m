@@ -15,6 +15,7 @@ function [root,fx,ARE,trys]=bisectE(fun,xl,xu,ea,tries,varargin)
 % trys = number of iterations
 if nargin<3, error('bisect(): more arguments please'), end
 test=fun(xl,varargin{:})*fun(xu,varargin{:});
+<<<<<<< Updated upstream
 if test==0
     go=false;
     if fun(xl,varargin{:})==0, root=xl;
@@ -27,6 +28,15 @@ else
     if (nargin<4)||(isempty(ea)), ea=1e-4; end
     if (nargin<5)||(isempty(tries)), tries=50; end
 end
+=======
+if test>0, error('no sign change'), end
+if fun(xl,varargin{:})==0, root=xl; ARE=0; go=false;
+elseif fun(xu,varargin{:})==0, root=xu; ARE=0; go=false;
+else, root=xl; ARE=1; go=true;
+end%check the lower and upper points for zero
+if (nargin<4)||(isempty(ea)), ea=1e-6; end
+if (nargin<5)||(isempty(tries)), tries=50; end
+>>>>>>> Stashed changes
 trys=0;
 while go
   rtold=root;
