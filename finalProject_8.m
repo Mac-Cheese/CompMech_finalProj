@@ -9,7 +9,7 @@ Ui=1; Re=@(x) Ui*x/nu;% [m/s]; []
 %Uo/Ui = 4/(Re^.5) to ODE  d3f/d'eta^3 + f*d2f/d'eta^2 + 2*(df/d'eta)^2 = 0
 %for eta=0, f=df/d'eta=0;  for eta=H=10, df/d'eta=d2f/d'eta^2 = 0
 %% I.a
-% implicit solution given as
+%   implicit solution given as
 etaf=@(f,n) log(sqrt(1+sqrt(f)+f)./(1-sqrt(f)))...
     +sqrt(3)*atan(sqrt(3.*f)./(2+sqrt(f)))-n;
 eta=[0:0.05:10]'; f=zeros((10/.05)+1,1);
