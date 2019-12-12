@@ -61,17 +61,18 @@ fprintf('Analytical: %5.4f\n',v_H)
 
 %% I.h
 % Solve Eq.(1) and compare to f(n)
-deta=@(x,y) [y(2);y(3);-y(1).*y(3)-2.*y(2).^2];
-[etaODE,fODE]=ode45(deta,[0 10],[0 0 Z]);
+zah=fzero(@res,0,[],1);
+[etaODE,fODE]=ode45(@dydx,[0 10],[0 0 zah],[],1);
 figure(1); hold on; plot(etaODE,fODE(:,1),'y--');
 
 %% II
 Pr=.7;
 %% II.i
 % Solve ODE
-za=fzero(@res,Z,[],fODE,etaODE);
-[n,theta]=ode45(@dydx,[0 10],[1 za],[],fODE,etaODE);
-figure(4); plot(theta(:,1),n); xlabel('theta'); ylabel('eta')
+zai=fzero(@res,0,[],2,fODE(:,1),etaODE);
+[n,theta]=ode45(@dydx,[0 10],[1 zai],[],2,fODE(:,1),etaODE);
+figure(4); plot(theta(:,1),n); xlim([0,1]); xlabel('theta'); ylabel('eta')
+%there's a theta value of -1.687e-16, so we squish the plot display limit.
 
 %% II.j
 % Thermal boundary location
