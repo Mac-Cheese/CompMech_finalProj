@@ -89,3 +89,7 @@ fprintf('theta''(0): %5.4f, compare %5.4f\n',-1*dtheta(1),.235*(Pr^(1/3)))
 
 %% II.l
 % Solve Eq.(4) and compare to theta(n)
+fetaSpln=spline(etaODE,fODE(:,1));
+[x,theta]=CFD(fetaSpln,5);
+%f=@(eta) ppval(fetaSpln,eta);
+figure(4); hold on; plot(theta,x); hold off; xlim([0 1]);
